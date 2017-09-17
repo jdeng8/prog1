@@ -269,18 +269,6 @@ class Vector {
     }
     
 } // end Vector class
-/* parameters */
-var eyePosX = document.getElementById("eyex").value;
-var eyePosY = document.getElementById("eyey").value;
-var eyePosZ = document.getElementById("eyez").value;
-
-// var blx = document.getElementById("blx").value;
-// var bly = document.getElementById("bly").value;
-// var blz = document.getElementById("blz").value;
-
-// var urx = document.getElementById("urx").value;
-// var ury = document.getElementById("ury").value;
-// var urz = document.getElementById("urz").value;
 /* utility functions */
 
 // draw a pixel at x,y using color
@@ -344,6 +332,24 @@ function getInputLights() {
         return JSON.parse(httpReq.response); 
 } // end get input lights
 
+function getInputTriangles() {
+    const INPUT_TRIANGLE_URL = "https://ncsucgclass.github.io/prog1/triangles.json";
+        
+    // load the lights file
+    var httpReq = new XMLHttpRequest(); // a new http request
+    httpReq.open("GET",INPUT_TRIANGLE_URL,false); // init the request
+    httpReq.send(null); // send the request
+    var startTime = Date.now();
+    while ((httpReq.status !== 200) && (httpReq.readyState !== XMLHttpRequest.DONE)) {
+        if ((Date.now()-startTime) > 3000)
+            break;
+    } // until its loaded or we time out after three seconds
+    if ((httpReq.status !== 200) || (httpReq.readyState !== XMLHttpRequest.DONE)) {
+        console.log*("Unable to open input ellipses file!");
+        return String.null;
+    } else
+        return JSON.parse(httpReq.response); 
+} // end get input lights
 // put points in the ellipsoids from the class github
 function drawPixelsInInputEllipsoids(context) {
     var inputEllipsoids = getInputEllipsoids();
@@ -351,7 +357,7 @@ function drawPixelsInInputEllipsoids(context) {
     var w = context.canvas.width;
     var h = context.canvas.height;
     var imagedata = context.createImageData(w,h);
-    const eyePos = new Vector(parseFloat(eyePosX), parseFloat(eyePosY), parseFloat(eyePosZ));
+    var eyePos = new Vector(0.5,0.5,-0.5);
 
     if (inputEllipsoids != String.null) { 
         var n = inputEllipsoids.length; // the number of input ellipsoids
@@ -477,6 +483,20 @@ function ellipsoidQuatratic(c,d,e,rx,ry,rz){
     };
 }
 
+function triangleQuatratic(c,d,e,rx,ry,rz){
+    var cm = Vector.scale2(new Vector(1/rx, 1/ry, 1/rz), c);
+    var dm = Vector.scale2(new Vector(1/rx, 1/ry, 1/rz), Vector.subtract(d, e));
+    var em = Vector.scale2(new Vector(1/rx, 1/ry, 1/rz), e);
+
+    var a = Vector.dot(dm,dm);
+    var b = 2*Vector.dot(Vector.subtract(em,cm),dm);
+    var c = (Vector.dot(Vector.subtract(em,cm),Vector.subtract(em,cm))-1);
+    return{
+        a:a,
+        b:b,
+        c:c
+    };
+}
 
 function isIntersect(arg){
     var quat = arg['b']*arg['b']-4*arg['a']*arg['c'];
@@ -499,22 +519,19 @@ function getObjectPos(e,d,t){
     return Vector.add(e, Vector.scale(t,v));
 }
 /* main -- here is where execution begins after window load */
-function submit(){
-    window.onload();
-}
 
-window.onload = function() {
+function main() {
 
     // Get the canvas and context
     var canvas = document.getElementById("viewport"); 
     var context = canvas.getContext("2d");
  
-    eyePosX = document.getElementById("eyex").value;
-    eyePosY = document.getElementById("eyey").value;
-    eyePosZ = document.getElementById("eyez").value;
-
-    canvas.width = document.getElementById("canvasx").value;
-    canvas.height = document.getElementById("canvasy").value;
+    // Create the image
+    //drawRandPixels(context);
+      // shows how to draw pixels
+    
+    //drawRandPixelsInInputEllipsoids(context);
+      // shows how to draw pixels and read input file
 
     drawPixelsInInputEllipsoids(context);
     
