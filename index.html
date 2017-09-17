@@ -3,9 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <title>Pixel Drawing</title>
-<script type="text/javascript" src="drawstuff.js"></script>
 </head>
 <body onload="main();">
-<canvas id="viewport" width="512" height="512"></canvas>
+	<div>
+		<label> eyes position </label>
+		x <input type="text" id="eyex", value=0.5>
+		y <input type="text" id="eyey", value=0.5>
+		z <input type="text" id="eyez", value=-0.5>
+	</div>
+	<div>
+		<label> canvas size </label>
+		w <input type="text" id="canvasx", value=512>
+		h <input type="text" id="canvasy", value=512>
+	</div>
+		
+	<!-- <div>
+		<p> window location </p>
+		bottom-left x<input type="text" id="ulx", value=0> y <input type="text" id="uly", value=0> z <input type="text" id="ulz", value=0>
+	</div>
+			
+	<div>
+		upper-right x<input type="text" id="brx", value=1> y <input type="text" id="brzza", value=1> z <input type="text" id="brz", value=0>
+	</div> -->
+
+	<div>
+		<button onclick="submit()">submit</button>
+	</div>
+	<p></p>
+	<div>
+		<canvas id="viewport" width="512" height="512"></canvas>	
+	</div>
+<script type="text/javascript" src="drawstuff.js"></script>
 </body>
 </html>
