@@ -397,36 +397,19 @@ function drawPixelsInInputEllipsoids(context) {
                 //fill color, light and shadow
                 if(closeObject<n){
                     var ambient = new Color(
-                            inputEllipsoids[closeObject].ambient[0],
-                            inputEllipsoids[closeObject].ambient[1],
-                            inputEllipsoids[closeObject].ambient[2],
+                            inputEllipsoids[closeObject].ambient[0]*255,
+                            inputEllipsoids[closeObject].ambient[1]*255,
+                            inputEllipsoids[closeObject].ambient[2]*255,
                             1);
                     var illum = new Color(0,0,0,1);
 
                     for(var l=0; l<ln;l++){
                         var light = new Vector(lights[l].x, lights[l].y, lights[l].z);
-                        var hit = 1;
-                        for(var e=0; e<n; e++){
-                            var ellipsoidA = inputEllipsoids[e].a;
-                            var ellipsoidB = inputEllipsoids[e].b;
-                            var ellipsoidC = inputEllipsoids[e].c;
-                            var center = new Vector(inputEllipsoids[e].x, inputEllipsoids[e].y, inputEllipsoids[e].z);
-                            
-                            var equationParameters = ellipsoidQuatratic(center, light, objectPos, ellipsoidA, ellipsoidB, ellipsoidC);
-                            if(isIntersect(equationParameters)) {
-                                var roots = getRoot(equationParameters);
-                                if(Math.min(roots["r1"], roots["r2"])>1/w/h){
-                                    hit = 0;
-                                    break;
-                                }
-                            }
-                        }
-                        if(hit ==1){
                             illum = illum.add(shadePixel(inputEllipsoids[closeObject],normal,light, eyePos, objectPos, lights[l]));
-                        }
+                        
                     }
 
-                    var fillColor = ambient.add(illum).scale(255);
+                    var fillColor = ambient.add(illum);
                     drawPixel(imagedata,i*w,(1-j)*h,fillColor);
                 }
                 else{//background
@@ -444,9 +427,9 @@ function shadePixel(ellipsoid, normal, light, eye, oPos, lightColor){
     var l = Vector.normalize(Vector.subtract(light, oPos));
     var NdotL = Math.max(0,Vector.dot(n, l));
     var diffuse = new Color(
-                            ellipsoid.diffuse[0]*lightColor.diffuse[0]*NdotL,
-                            ellipsoid.diffuse[1]*lightColor.diffuse[1]*NdotL,
-                            ellipsoid.diffuse[2]*lightColor.diffuse[2]*NdotL,
+                            ellipsoid.diffuse[0]*lightColor.diffuse[0]*NdotL*255,
+                            ellipsoid.diffuse[1]*lightColor.diffuse[1]*NdotL*255,
+                            ellipsoid.diffuse[2]*lightColor.diffuse[2]*NdotL*255,
                             1);
 
     var v = Vector.normalize(Vector.subtract(eye, oPos));
@@ -455,9 +438,9 @@ function shadePixel(ellipsoid, normal, light, eye, oPos, lightColor){
     var NdotH = Math.pow(Math.max(0,Vector.dot(n, h)),q);
     // NdotH = 1;
     var specular = new Color(
-                            ellipsoid.specular[0]*lightColor.specular[0]*NdotH,
-                            ellipsoid.specular[1]*lightColor.specular[1]*NdotH,
-                            ellipsoid.specular[2]*lightColor.specular[2]*NdotH,
+                            ellipsoid.specular[0]*lightColor.specular[0]*NdotH*255,
+                            ellipsoid.specular[1]*lightColor.specular[1]*NdotH*255,
+                            ellipsoid.specular[2]*lightColor.specular[2]*NdotH*255,
                             1);
     diffuse.add(specular);
     return diffuse;
