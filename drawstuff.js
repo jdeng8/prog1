@@ -247,26 +247,6 @@ class Vector {
         }
     } // end scale static method
 
-    static cross(v1, v2){
-        try {
-            if (!(v1 instanceof Vector) || !(v2 instanceof Vector))
-                throw "Vector.normalize: parameter not a vector";
-            else{
-                var crossv = new Vector(
-                    v1.y*v2.z-v2.y*v1.z,
-                    v2.x*v1.z-v1.x*v2.z,
-                    v1.x*v2.y-v2.y*v1.x,
-                    );
-                return crossv;
-            }
-
-        }
-
-        catch(e){
-            console.log(e);
-            return(new Vector(NaN,NaN,NaN));
-        }
-    }
     
 } // end Vector class
 /* parameters */
