@@ -246,27 +246,6 @@ class Vector {
             return(new Vector(NaN,NaN,NaN));
         }
     } // end scale static method
-
-    static cross(v1, v2){
-        try {
-            if (!(v1 instanceof Vector) || !(v2 instanceof Vector))
-                throw "Vector.normalize: parameter not a vector";
-            else{
-                var crossv = new Vector(
-                    v1.y*v2.z-v2.y*v1.z,
-                    v2.x*v1.z-v1.x*v2.z,
-                    v1.x*v2.y-v2.y*v1.x,
-                    );
-                return crossv;
-            }
-
-        }
-
-        catch(e){
-            console.log(e);
-            return(new Vector(NaN,NaN,NaN));
-        }
-    }
     
 } // end Vector class
 /* utility functions */
@@ -332,24 +311,6 @@ function getInputLights() {
         return JSON.parse(httpReq.response); 
 } // end get input lights
 
-function getInputTriangles() {
-    const INPUT_TRIANGLE_URL = "https://ncsucgclass.github.io/prog1/triangles.json";
-        
-    // load the lights file
-    var httpReq = new XMLHttpRequest(); // a new http request
-    httpReq.open("GET",INPUT_TRIANGLE_URL,false); // init the request
-    httpReq.send(null); // send the request
-    var startTime = Date.now();
-    while ((httpReq.status !== 200) && (httpReq.readyState !== XMLHttpRequest.DONE)) {
-        if ((Date.now()-startTime) > 3000)
-            break;
-    } // until its loaded or we time out after three seconds
-    if ((httpReq.status !== 200) || (httpReq.readyState !== XMLHttpRequest.DONE)) {
-        console.log*("Unable to open input ellipses file!");
-        return String.null;
-    } else
-        return JSON.parse(httpReq.response); 
-} // end get input lights
 // put points in the ellipsoids from the class github
 function drawPixelsInInputEllipsoids(context) {
     var inputEllipsoids = getInputEllipsoids();
@@ -436,7 +397,6 @@ function shadePixel(ellipsoid, normal, light, eye, oPos, lightColor){
     var h = Vector.normalize(Vector.add(v,l));
     var q = ellipsoid.n;
     var NdotH = Math.pow(Math.max(0,Vector.dot(n, h)),q);
-    // NdotH = 1;
     var specular = new Color(
                             ellipsoid.specular[0]*lightColor.specular[0]*NdotH*255,
                             ellipsoid.specular[1]*lightColor.specular[1]*NdotH*255,
@@ -452,21 +412,6 @@ function getEllipsNormal(c,d,rx,ry,rz){
 
 //solve quatratic equation
 function ellipsoidQuatratic(c,d,e,rx,ry,rz){
-    var cm = Vector.scale2(new Vector(1/rx, 1/ry, 1/rz), c);
-    var dm = Vector.scale2(new Vector(1/rx, 1/ry, 1/rz), Vector.subtract(d, e));
-    var em = Vector.scale2(new Vector(1/rx, 1/ry, 1/rz), e);
-
-    var a = Vector.dot(dm,dm);
-    var b = 2*Vector.dot(Vector.subtract(em,cm),dm);
-    var c = (Vector.dot(Vector.subtract(em,cm),Vector.subtract(em,cm))-1);
-    return{
-        a:a,
-        b:b,
-        c:c
-    };
-}
-
-function triangleQuatratic(c,d,e,rx,ry,rz){
     var cm = Vector.scale2(new Vector(1/rx, 1/ry, 1/rz), c);
     var dm = Vector.scale2(new Vector(1/rx, 1/ry, 1/rz), Vector.subtract(d, e));
     var em = Vector.scale2(new Vector(1/rx, 1/ry, 1/rz), e);
